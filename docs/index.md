@@ -12,12 +12,23 @@ hero:
     - theme: alt
       text: API Examples
       link: /api/resource
-
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - icon: 🛠
+    title: Structured JSON Contracts
+    details: Enforces a consistent API response envelope with predictable data and metadata handling across your application.
+  - icon: 🥡
+    title: Resource & Collection Abstractions
+    details: Define transformation logic once and reuse it across single entities, arrays, paginated results, and cursor-based datasets.
+  - icon: 📖
+    title: Automatic Pagination & Cursor Meta
+    details: Pagination and cursor metadata are automatically normalized into a structured meta object without manual merging.
+  - icon: 🚏
+    title: Transport-Aware Response Binding
+    details: Seamlessly bind to Express, H3, and Connect-style frameworks with status, headers, and cookies while preserving data integrity.
+  - icon: ⌨️
+    title: TypeScript-First Design
+    details: Built with strict typing in mind to ensure safe transformations and reliable API contracts.
+  - icon: 🔌
+    title: Extensible by Design
+    details: Override transformation logic, customize metadata, and shape output without coupling to any specific framework.
 ---
