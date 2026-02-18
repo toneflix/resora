@@ -1,5 +1,4 @@
 import { Resource } from "src";
-import { Resource } from "src/types";
 
 /**
  * BaseResource function to create a Resource instance

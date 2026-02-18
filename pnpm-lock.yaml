@@ -50,6 +50,9 @@ importers:
       vitest:
         specifier: ^4.0.18
         version: 4.0.18(@types/node@20.19.33)(tsx@4.21.0)
+      vue:
+        specifier: ^3.5.28
+        version: 3.5.28(typescript@5.9.3)
 
 packages:
 
