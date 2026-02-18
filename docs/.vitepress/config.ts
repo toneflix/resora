@@ -6,6 +6,21 @@ export default defineConfig({
   base: '/resora/',
   title: "Resora",
   description: "A structured API response layer for Node.js and TypeScript with automatic JSON responses, collection support, and pagination handling",
+  head: [
+    ['link', { rel: 'icon', href: '/banner.png' }],
+    ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }],
+    ['meta', { name: 'description', content: 'A structured API response layer for Node.js and TypeScript with automatic JSON responses, collection support, and pagination handling' }],
+    ['meta', { name: 'keywords', content: 'API, Node.js, TypeScript, JSON responses, collections, pagination' }],
+    ['meta', { name: 'author', content: 'Toneflix' }],
+    ['meta', { property: 'og:title', content: 'Resora' }],
+    ['meta', { property: 'og:description', content: 'A structured API response layer for Node.js and TypeScript with automatic JSON responses, collection support, and pagination handling' }],
+    ['meta', { property: 'og:image', content: '/banner.png' }],
+    ['meta', { property: 'og:url', content: 'https://toneflix.github.io/resora/' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'Resora' }],
+    ['meta', { name: 'twitter:description', content: 'A structured API response layer for Node.js and TypeScript with automatic JSON responses, collection support, and pagination handling' }],
+    ['meta', { name: 'twitter:image', content: '/banner.png' }]
+  ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [

@@ -5,6 +5,9 @@ layout: home
 hero:
   name: 'Resora'
   tagline: A structured API response layer for Node.js and TypeScript with automatic JSON responses, collection support, and pagination handling
+  image:
+    src: /banner.png
+    alt: Resora
   actions:
     - theme: brand
       text: Get Started
