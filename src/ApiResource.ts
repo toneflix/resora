@@ -1,4 +1,4 @@
-import { Resource } from "src";
+import { Resource } from 'src'
 
 /**
  * ApiResource function to return the Resource instance
@@ -7,5 +7,5 @@ import { Resource } from "src";
  * @returns Resource instance
  */
 export function ApiResource<R extends Resource> (instance: Resource<R>): Resource<R> {
-    return instance;
+    return instance
 }

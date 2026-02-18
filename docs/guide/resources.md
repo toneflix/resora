@@ -121,11 +121,11 @@ This allows usage like:
 return await new UserResource(user);
 ```
 
-# Extending Resource
+## Extending Resource
 
 Resources are meant to be extended.
 
-## Custom Transformation
+### Custom Transformation
 
 ```ts
 class UserResource extends Resource {
@@ -153,14 +153,14 @@ Result:
 }
 ```
 
-## Accessing Original Payload
+### Accessing Original Payload
 
 Inside extended classes:
 
 - `this.toArray()` returns original payload
 - Properties are proxied (`this.id`, `this.name`)
 
-## Chaining Still Works
+### Chaining Still Works
 
 Extended resources retain:
 

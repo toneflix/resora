@@ -61,7 +61,7 @@ Each item is transformed using the `collects` resource.
 
 ---
 
-# Pagination Support
+## Pagination Support
 
 If input contains a `pagination` object:
 
@@ -91,7 +91,7 @@ Output becomes:
 
 ---
 
-# Cursor Pagination Support
+## Cursor Pagination Support
 
 If input contains a `cursor` object:
 
@@ -121,7 +121,7 @@ Output:
 
 ---
 
-# Combined Pagination + Cursor
+## Combined Pagination + Cursor
 
 If both exist:
 
@@ -147,7 +147,7 @@ Output:
 
 ---
 
-# Chaining in Collections
+## Chaining in Collections
 
 Collections also support:
 
@@ -166,7 +166,7 @@ Result:
 
 ---
 
-# Design Behavior Summary
+## Design Behavior Summary
 
 | Feature             | Resource | ResourceCollection |
 | ------------------- | -------- | ------------------ |
@@ -180,7 +180,7 @@ Result:
 
 ---
 
-# Data Flow Model
+## Data Flow Model
 
 1. Raw data passed to [`Resource`](./resources.md) / `ResourceCollection`
 2. `data()` defines transformation

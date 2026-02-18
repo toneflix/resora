@@ -41,7 +41,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "lint": "oxlint",
+    "lint": "eslint",
     "test": "pnpm vitest",
     "build": "pnpm tsdown",
     "barrel": "barrelize",
@@ -51,17 +51,20 @@
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@eslint/markdown": "^7.5.1",
     "@types/express": "^4.17.21",
     "@types/node": "^20.10.6",
     "@types/supertest": "^6.0.3",
     "barrelize": "^1.7.3",
+    "eslint": "^10.0.0",
     "express": "^5.1.0",
     "h3": "2.0.1-rc.14",
-    "oxlint": "^1.48.0",
     "supertest": "^7.1.1",
     "tsdown": "^0.20.3",
     "tsx": "^4.21.0",
     "typescript": "^5.3.3",
+    "typescript-eslint": "^8.56.0",
     "vite-tsconfig-paths": "^6.1.1",
     "vitepress": "2.0.0-alpha.16",
     "vitest": "^4.0.18",

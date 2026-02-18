@@ -1,4 +1,4 @@
-import { Resource } from "src";
+import { Resource } from 'src'
 
 /**
  * BaseResource function to create a Resource instance
@@ -7,5 +7,5 @@ import { Resource } from "src";
  * @returns Resource instance
  */
 export default function BaseResource<R extends Resource> (rsc: R): Resource<R> {
-    return new Resource<R>(rsc);
+    return new Resource<R>(rsc)
 }

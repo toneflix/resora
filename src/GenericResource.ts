@@ -1,8 +1,8 @@
-import type { H3Event } from "h3";
-import { Collectible, GenericBody, NonCollectible, ResourceData } from "src/types";
-import { ServerResponse } from "./ServerResponse";
-import type { Response } from "express";
-import { Resource } from "./Resource";
+import type { H3Event } from 'h3'
+import { Collectible, GenericBody, NonCollectible, ResourceData } from 'src/types'
+import { ServerResponse } from './ServerResponse'
+import type { Response } from 'express'
+import { Resource } from './Resource'
 
 /**
  * GenericResource class to handle API resource transformation and response building
@@ -12,9 +12,9 @@ export class GenericResource<
   T extends ResourceData = any
 > {
   [key: string]: any;
-  public body: GenericBody<R> = { data: {} as any };
-  public resource: R;
-  public collects?: typeof Resource<T>;
+  public body: GenericBody<R> = { data: {} as any }
+  public resource: R
+  public collects?: typeof Resource<T>
   private called: {
     json?: boolean
     data?: boolean
@@ -23,10 +23,10 @@ export class GenericResource<
     status?: boolean
     then?: boolean
     toResponse?: boolean
-  } = {};
+  } = {}
 
   constructor(rsc: R, private res?: Response) {
-    this.resource = rsc;
+    this.resource = rsc
 
     /**
      * Copy properties from rsc to this instance for easy 
@@ -43,9 +43,9 @@ export class GenericResource<
             },
             set: (value) => {
               if ((<any>this.resource).data && this.resource.data[key]) {
-                this.resource.data[key] = value;
+                this.resource.data[key] = value
               } else {
-                (<any>this.resource)[key] = value;
+                (<any>this.resource)[key] = value
               }
             },
           })
@@ -58,7 +58,7 @@ export class GenericResource<
    * Get the original resource data
    */
   data (): R {
-    return this.resource;
+    return this.resource
   }
 
   /**
@@ -68,36 +68,36 @@ export class GenericResource<
    */
   json () {
     if (!this.called.json) {
-      this.called.json = true;
+      this.called.json = true
 
-      const resource = this.data();
+      const resource = this.data()
 
-      let data: any = Array.isArray(resource) ? [...resource] : { ...resource };
+      let data: any = Array.isArray(resource) ? [...resource] : { ...resource }
 
       if (Array.isArray(data) && this.collects) {
         data = data.map(item => new this.collects!(item).data())
         this.resource = data
       }
 
-      if (typeof data.data !== "undefined") {
-        data = data.data;
+      if (typeof data.data !== 'undefined') {
+        data = data.data
       }
 
       if ((<any>this.resource).pagination && data.data && Array.isArray(data.data)) {
-        delete data.pagination;
+        delete data.pagination
       }
 
-      this.body = { data };
+      this.body = { data }
 
       if (Array.isArray(this.body.data) && (<any>this.resource).pagination) {
         this.body.meta = {
           pagination: (<any>this.resource).pagination,
-        };
+        }
       }
     }
 
     // if (this.collects) console.log(this.body, this.constructor.name, this.collects.name)
-    return this;
+    return this
   }
 
   /**
@@ -106,16 +106,16 @@ export class GenericResource<
    * @returns
    */
   toArray () {
-    this.called.toArray = true;
+    this.called.toArray = true
     this.json()
 
-    let data: any = Array.isArray(this.resource) ? [...this.resource] : { ...this.resource };
+    let data: any = Array.isArray(this.resource) ? [...this.resource] : { ...this.resource }
 
-    if (typeof data.data !== "undefined") {
-      data = data.data;
+    if (typeof data.data !== 'undefined') {
+      data = data.data
     }
 
-    return data;
+    return data
   }
 
   /**
@@ -125,26 +125,26 @@ export class GenericResource<
    * @returns 
    */
   additional<X extends Record<string, any>> (extra: X) {
-    this.called.additional = true;
+    this.called.additional = true
     this.json()
 
-    delete extra.data;
-    delete extra.pagination;
+    delete extra.data
+    delete extra.pagination
 
     this.body = {
       ...this.body,
       ...extra,
-    };
+    }
 
-    return this;
+    return this
   }
 
   response (): ServerResponse<GenericBody<R>>
   response (res: H3Event['res']): ServerResponse<GenericBody<R>>
   response (res?: H3Event['res']): ServerResponse<GenericBody<R>> {
-    this.called.toResponse = true;
+    this.called.toResponse = true
 
-    return new ServerResponse(res ?? this.res as never, this.body);
+    return new ServerResponse(res ?? this.res as never, this.body)
   }
 
   /**
@@ -158,15 +158,15 @@ export class GenericResource<
     onfulfilled?: ((value: GenericBody<R>) => TResult1 | PromiseLike<TResult1>) | null,
     onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null,
   ): Promise<TResult1 | TResult2> {
-    this.called.then = true;
+    this.called.then = true
     this.json()
 
-    const resolved = Promise.resolve(this.body).then(onfulfilled, onrejected);
+    const resolved = Promise.resolve(this.body).then(onfulfilled, onrejected)
 
     if (this.res) {
-      this.res.send(this.body);
+      this.res.send(this.body)
     }
 
-    return resolved;
+    return resolved
   }
 }

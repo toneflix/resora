@@ -1,16 +1,16 @@
-import type { H3Event } from "h3";
-import { Collectible, NonCollectible, ResourceBody, ResourceData } from "src/types";
-import { ServerResponse } from "./ServerResponse";
-import type { Response } from "express";
-import { ResourceCollection } from "./ResourceCollection";
+import type { H3Event } from 'h3'
+import { Collectible, NonCollectible, ResourceBody, ResourceData } from 'src/types'
+import { ServerResponse } from './ServerResponse'
+import type { Response } from 'express'
+import { ResourceCollection } from './ResourceCollection'
 
 /**
  * Resource class to handle API resource transformation and response building
  */
 export class Resource<R extends ResourceData | NonCollectible = ResourceData> {
   [key: string]: any;
-  public body: ResourceBody<R> = { data: {} as any };
-  public resource: R;
+  public body: ResourceBody<R> = { data: {} as any }
+  public resource: R
   private called: {
     json?: boolean
     data?: boolean
@@ -19,10 +19,10 @@ export class Resource<R extends ResourceData | NonCollectible = ResourceData> {
     status?: boolean
     then?: boolean
     toResponse?: boolean
-  } = {};
+  } = {}
 
   constructor(rsc: R, private res?: Response) {
-    this.resource = rsc;
+    this.resource = rsc
 
     /**
      * Copy properties from rsc to this instance for easy 
@@ -39,9 +39,9 @@ export class Resource<R extends ResourceData | NonCollectible = ResourceData> {
             },
             set: (value) => {
               if ((<any>this.resource).data && this.resource.data[key]) {
-                this.resource.data[key] = value;
+                this.resource.data[key] = value
               } else {
-                (<any>this.resource)[key] = value;
+                (<any>this.resource)[key] = value
               }
             },
           })
@@ -60,14 +60,14 @@ export class Resource<R extends ResourceData | NonCollectible = ResourceData> {
     C extends ResourceData[] | Collectible = ResourceData[],
     T extends ResourceData = any
   > (data: C) {
-    return new ResourceCollection<C, T>(data).setCollects(this);
+    return new ResourceCollection<C, T>(data).setCollects(this)
   }
 
   /**
    * Get the original resource data
    */
   data () {
-    return this.toArray();
+    return this.toArray()
   }
 
   /**
@@ -77,20 +77,20 @@ export class Resource<R extends ResourceData | NonCollectible = ResourceData> {
    */
   json () {
     if (!this.called.json) {
-      this.called.json = true;
+      this.called.json = true
 
-      const resource = this.data();
+      const resource = this.data()
 
-      let data: any = Array.isArray(resource) ? [...resource] : { ...resource };
+      let data: any = Array.isArray(resource) ? [...resource] : { ...resource }
 
-      if (typeof data.data !== "undefined") {
-        data = data.data;
+      if (typeof data.data !== 'undefined') {
+        data = data.data
       }
 
-      this.body = { data };
+      this.body = { data }
     }
 
-    return this;
+    return this
   }
 
   /**
@@ -99,16 +99,16 @@ export class Resource<R extends ResourceData | NonCollectible = ResourceData> {
    * @returns
    */
   toArray (): R extends NonCollectible ? R['data'] : R {
-    this.called.toArray = true;
+    this.called.toArray = true
     this.json()
 
-    let data = Array.isArray(this.resource) ? [...this.resource] : { ...this.resource };
+    let data = Array.isArray(this.resource) ? [...this.resource] : { ...this.resource }
 
-    if (!Array.isArray(data) && typeof data.data !== "undefined") {
-      data = data.data;
+    if (!Array.isArray(data) && typeof data.data !== 'undefined') {
+      data = data.data
     }
 
-    return data as never;
+    return data as never
   }
 
   /**
@@ -118,29 +118,29 @@ export class Resource<R extends ResourceData | NonCollectible = ResourceData> {
    * @returns 
    */
   additional<X extends Record<string, any>> (extra: X) {
-    this.called.additional = true;
+    this.called.additional = true
     this.json()
 
     if (extra.data) {
       this.body.data = Array.isArray(this.body.data)
         ? [...this.body.data, ...extra.data]
-        : { ...this.body.data, ...extra.data };
+        : { ...this.body.data, ...extra.data }
     }
 
     this.body = {
       ...this.body,
       ...extra,
-    };
+    }
 
-    return this;
+    return this
   }
 
   response (): ServerResponse<ResourceBody<R>>
   response (res: H3Event['res']): ServerResponse<ResourceBody<R>>
   response (res?: H3Event['res']): ServerResponse<ResourceBody<R>> {
-    this.called.toResponse = true;
+    this.called.toResponse = true
 
-    return new ServerResponse(res ?? this.res as never, this.body);
+    return new ServerResponse(res ?? this.res as never, this.body)
   }
 
   /**
@@ -154,16 +154,16 @@ export class Resource<R extends ResourceData | NonCollectible = ResourceData> {
     onfulfilled?: ((value: ResourceBody<R>) => TResult1 | PromiseLike<TResult1>) | null,
     onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null,
   ): Promise<TResult1 | TResult2> {
-    this.called.then = true;
+    this.called.then = true
     this.json()
 
-    const resolved = Promise.resolve(this.body).then(onfulfilled, onrejected);
+    const resolved = Promise.resolve(this.body).then(onfulfilled, onrejected)
 
     if (this.res) {
-      this.res.send(this.body);
+      this.res.send(this.body)
     }
 
-    return resolved;
+    return resolved
   }
 
   /**
@@ -175,7 +175,7 @@ export class Resource<R extends ResourceData | NonCollectible = ResourceData> {
   catch<TResult = never> (
     onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null,
   ): Promise<ResourceBody<R> | TResult> {
-    return this.then(undefined, onrejected);
+    return this.then(undefined, onrejected)
   }
 
   /**
@@ -185,6 +185,6 @@ export class Resource<R extends ResourceData | NonCollectible = ResourceData> {
    * @returns 
    */
   finally (onfinally?: (() => void) | null) {
-    return this.then(onfinally, onfinally);
+    return this.then(onfinally, onfinally)
   }
 }

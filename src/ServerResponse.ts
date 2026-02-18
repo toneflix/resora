@@ -1,7 +1,7 @@
-import { Collectible, NonCollectible, ResourceData } from "src/types";
+import { Collectible, NonCollectible, ResourceData } from 'src/types'
 
-import type { H3Event } from "h3";
-import type { Response } from "express";
+import type { H3Event } from 'h3'
+import type { Response } from 'express'
 
 export class ServerResponse<
     R extends
@@ -10,8 +10,8 @@ export class ServerResponse<
     | ResourceData[]
     | ResourceData = ResourceData,
 > {
-    private _status: number = 200;
-    headers: Record<string, string> = {};
+    private _status: number = 200
+    headers: Record<string, string> = {}
 
     constructor(response: H3Event['res'], body: R)
     constructor(response: Response, body: R)
@@ -24,14 +24,15 @@ export class ServerResponse<
      * @returns The current ServerResponse instance
      */
     setStatusCode (status: number) {
-        this._status = status;
+        this._status = status
 
         if ('status' in this.response && typeof this.response.status === 'function') {
-            this.response.status(status);
+            this.response.status(status)
         } else if ('status' in this.response) {
-            this.response.status = status;
+            this.response.status = status
         }
-        return this;
+        
+return this
     }
 
     /**
@@ -40,7 +41,7 @@ export class ServerResponse<
      * @returns 
      */
     status () {
-        return this._status;
+        return this._status
     }
 
     /**
@@ -50,11 +51,12 @@ export class ServerResponse<
      */
     statusText () {
         if ('statusMessage' in this.response) {
-            return this.response.statusMessage;
+            return this.response.statusMessage
         } else if ('statusText' in this.response) {
-            return this.response.statusText;
+            return this.response.statusText
         }
-        return undefined;
+        
+return undefined
     }
 
     /**
@@ -67,11 +69,11 @@ export class ServerResponse<
      */
     setCookie (name: string, value: string, options?: Record<string, any>) {
         this.#addHeader(
-            "Set-Cookie",
-            `${name}=${value}; ${Object.entries(options || {}).map(([key, val]) => `${key}=${val}`).join("; ")}`
-        );
+            'Set-Cookie',
+            `${name}=${value}; ${Object.entries(options || {}).map(([key, val]) => `${key}=${val}`).join('; ')}`
+        )
 
-        return this;
+        return this
     }
 
     /**
@@ -82,9 +84,10 @@ export class ServerResponse<
      */
     setHeaders (headers: Record<string, string>) {
         for (const [key, value] of Object.entries(headers)) {
-            this.#addHeader(key, value);
+            this.#addHeader(key, value)
         }
-        return this;
+        
+return this
     }
 
     /**
@@ -95,8 +98,9 @@ export class ServerResponse<
      * @returns The current ServerResponse instance
      */
     header (key: string, value: string) {
-        this.#addHeader(key, value);
-        return this;
+        this.#addHeader(key, value)
+        
+return this
     }
 
     /**
@@ -106,11 +110,11 @@ export class ServerResponse<
      * @param value The value of the header
      */
     #addHeader (key: string, value: string) {
-        this.headers[key] = value;
+        this.headers[key] = value
         if ('headers' in this.response) {
-            this.response.headers.set(key, value);
+            this.response.headers.set(key, value)
         } else if ('setHeader' in this.response) {
-            this.response.setHeader(key, value);
+            this.response.setHeader(key, value)
         }
     }
 
@@ -125,13 +129,13 @@ export class ServerResponse<
         onfulfilled?: ((value: R) => TResult1 | PromiseLike<TResult1>) | null,
         onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null,
     ): Promise<TResult1 | TResult2> {
-        const resolved = Promise.resolve(this.body).then(onfulfilled, onrejected);
+        const resolved = Promise.resolve(this.body).then(onfulfilled, onrejected)
 
         if ('send' in this.response) {
-            this.response.send(this.body);
+            this.response.send(this.body)
         }
 
-        return resolved;
+        return resolved
     }
 
     /**
@@ -143,7 +147,7 @@ export class ServerResponse<
     catch<TResult = never> (
         onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null,
     ): Promise<R | TResult> {
-        return this.then(undefined, onrejected);
+        return this.then(undefined, onrejected)
     }
 
     /**
@@ -153,7 +157,7 @@ export class ServerResponse<
      * @returns 
      */
     finally (onfinally?: (() => void) | null) {
-        return this.then(onfinally, onfinally);
+        return this.then(onfinally, onfinally)
     }
 
 }

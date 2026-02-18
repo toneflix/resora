@@ -1,7 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from 'vitest'
 
-import { Resource } from "src";
-import { ResourceCollection } from "src/ResourceCollection";
+import { Resource } from 'src'
+import { ResourceCollection } from 'src/ResourceCollection'
 
 describe('Resource Pagination', () => {
     it('should handle pagination data correctly', () => {
@@ -13,10 +13,10 @@ describe('Resource Pagination', () => {
                 currentPage: 1,
                 lastPage: 10,
             },
-        };
+        }
 
-        const jsonResource = new ResourceCollection(resource);
-        const jsonResponse = jsonResource.json().body;
+        const jsonResource = new ResourceCollection(resource)
+        const jsonResponse = jsonResource.json().body
 
         expect(jsonResponse).toEqual({
             data: [{ id: 1 }, { id: 2 }],
@@ -28,8 +28,8 @@ describe('Resource Pagination', () => {
                     lastPage: 10,
                 },
             },
-        });
-    });
+        })
+    })
 
     it('should not include pagination meta for non-collection resources', () => {
         const resource = {
@@ -41,12 +41,12 @@ describe('Resource Pagination', () => {
                 currentPage: 1,
                 lastPage: 10,
             },
-        };
+        }
 
-        const jsonResource = new Resource(resource);
-        const jsonResponse = jsonResource.json().body;
-        expect(jsonResponse).toEqual({ data: resource });
-    });
+        const jsonResource = new Resource(resource)
+        const jsonResponse = jsonResource.json().body
+        expect(jsonResponse).toEqual({ data: resource })
+    })
 
     it('should not include pagination meta if data is not an array', () => {
         const resource = {
@@ -57,13 +57,13 @@ describe('Resource Pagination', () => {
                 currentPage: 1,
                 lastPage: 10,
             },
-        };
+        }
 
-        const jsonResource = new Resource(resource);
-        const jsonResponse = jsonResource.json().body;
+        const jsonResource = new Resource(resource)
+        const jsonResponse = jsonResource.json().body
 
-        expect(jsonResponse).toEqual({ data: resource.data });
-    });
+        expect(jsonResponse).toEqual({ data: resource.data })
+    })
 
     it('should handle empty data with pagination', () => {
         const resource = {
@@ -74,10 +74,10 @@ describe('Resource Pagination', () => {
                 currentPage: 1,
                 lastPage: 1,
             },
-        };
+        }
 
-        const jsonResource = new ResourceCollection(resource);
-        const jsonResponse = jsonResource.json().body;
+        const jsonResource = new ResourceCollection(resource)
+        const jsonResponse = jsonResource.json().body
 
         expect(jsonResponse).toEqual({
             data: [],
@@ -89,19 +89,19 @@ describe('Resource Pagination', () => {
                     lastPage: 1,
                 },
             },
-        });
-    });
+        })
+    })
 
     it('should not include pagination meta if pagination is missing', () => {
         const resource = {
             data: [{ id: 1 }, { id: 2 }],
-        };
+        }
 
-        const jsonResource = new ResourceCollection(resource);
-        const jsonResponse = jsonResource.json().body;
+        const jsonResource = new ResourceCollection(resource)
+        const jsonResponse = jsonResource.json().body
 
         expect(jsonResponse).toEqual({
             data: [{ id: 1 }, { id: 2 }],
-        });
-    });
-});
+        })
+    })
+})

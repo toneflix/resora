@@ -4,7 +4,7 @@ The `.response()` method binds a `Resource` or `ResourceCollection` instance to 
 
 Once bound, the instance exposes transport-aware methods for mutating the outgoing response.
 
-# Method Signature
+## Method Signature
 
 **`.response(res?)`**
 
@@ -21,41 +21,41 @@ Binds the internal Resource instance to a framework-specific response object.
 
 - The same `Resource` or `ResourceCollection` instance (chainable).
 
-# Available Transport Methods After Binding
+## Available Transport Methods After Binding
 
 These methods become active only after `.response(res)` has been called.
 
-## `header(name, value)`
+### `header(name, value)`
 
 Sets a response header.
 
-### Parameters
+#### Parameters
 
 - `name` — Header name (string)
 - `value` — Header value (string)
 
-### Behavior
+#### Behavior
 
 - Delegates to the framework’s native header setter
 - Does not mutate the internal `data`
 - Chainable
 
-### Example Behavior
+#### Example Behavior
 
 If called:
 
 - The header will be present in the final HTTP response
 - JSON structure remains unchanged
 
-## `setStatusCode(code)`
+### `setStatusCode(code)`
 
 Sets the HTTP status code for the response.
 
-### Parameters
+#### Parameters
 
 - `code` — Numeric HTTP status code (e.g., 200, 201, 404)
 
-### Behavior
+#### Behavior
 
 - Applies the status code before body dispatch
 - Does not alter the JSON payload
@@ -63,17 +63,17 @@ Sets the HTTP status code for the response.
 
 If not called, the framework default status code is used.
 
-## `setCookie(name, value, options?)`
+### `setCookie(name, value, options?)`
 
 Sets a cookie on the response.
 
-### Parameters
+#### Parameters
 
 - `name` — Cookie name (string)
 - `value` — Cookie value (string)
 - `options` — Optional cookie configuration object
 
-### Supported Options (Framework-Dependent)
+#### Supported Options (Framework-Dependent)
 
 Typical cookie options may include:
 
@@ -87,13 +87,13 @@ Typical cookie options may include:
 
 Resora passes these options directly to the framework’s native cookie mechanism.
 
-### Behavior
+#### Behavior
 
 - Adds a `Set-Cookie` header
 - Does not interfere with JSON structure
 - Chainable
 
-# Chaining Behavior
+## Chaining Behavior
 
 All transport methods:
 
@@ -103,7 +103,7 @@ All transport methods:
 
 Example flow (conceptually):
 
-```
+```txt
 Resource
   → bind to response
   → set status
@@ -112,7 +112,7 @@ Resource
   → return structured JSON
 ```
 
-# Execution Model
+## Execution Model
 
 When `.response()` is used:
 
@@ -130,7 +130,7 @@ When `.response()` is used:
 
 Transport state and payload state are intentionally separated.
 
-# Framework Compatibility
+## Framework Compatibility
 
 `.response()` works with:
 
@@ -141,14 +141,14 @@ Transport state and payload state are intentionally separated.
 
 Resora does not replace the response lifecycle — it integrates into it.
 
-# If `.response()` Is Not Used
+## If `.response()` Is Not Used
 
 - The Resource acts as a pure transformation layer
 - It remains awaitable
 - It resolves to a JSON-ready object
 - No headers, cookies, or status manipulation is available
 
-# Design Contract
+## Design Contract
 
 `.response()` guarantees:
 
