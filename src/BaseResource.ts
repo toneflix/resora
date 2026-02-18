@@ -1,12 +1,12 @@
-import { JsonResource } from "src";
+import { Resource } from "src";
 import { Resource } from "src/types";
 
 /**
- * BaseResource function to create a JsonResource instance
+ * BaseResource function to create a Resource instance
  * 
  * @param rsc Resource instance
- * @returns JsonResource instance
+ * @returns Resource instance
  */
-export default function BaseResource<R extends Resource> (rsc: R): JsonResource<R> {
-    return new JsonResource<R>(rsc);
+export default function BaseResource<R extends Resource> (rsc: R): Resource<R> {
+    return new Resource<R>(rsc);
 }

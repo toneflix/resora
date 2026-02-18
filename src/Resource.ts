@@ -1,23 +1,16 @@
-// oxlint-disable unicorn/no-thenable
-// oxlint-disable typescript/no-explicit-any
-
 import type { H3Event } from "h3";
-import { Collectible, GenericBody, NonCollectible, ResourceData } from "src/types";
+import { Collectible, NonCollectible, ResourceBody, ResourceData } from "src/types";
 import { ServerResponse } from "./ServerResponse";
 import type { Response } from "express";
-import { JsonResource } from "./JsonResource";
+import { ResourceCollection } from "./ResourceCollection";
 
 /**
- * JsonGenericResource class to handle API resource transformation and response building
+ * Resource class to handle API resource transformation and response building
  */
-export class JsonGenericResource<
-  R extends NonCollectible | Collectible | ResourceData = ResourceData,
-  T extends ResourceData = any
-> {
+export class Resource<R extends ResourceData | NonCollectible = ResourceData> {
   [key: string]: any;
-  public body: GenericBody<R> = { data: {} as any };
+  public body: ResourceBody<R> = { data: {} as any };
   public resource: R;
-  public collects?: typeof JsonResource<T>;
   private called: {
     json?: boolean
     data?: boolean
@@ -58,10 +51,23 @@ export class JsonGenericResource<
   }
 
   /**
+   * Create a ResourceCollection from an array of resource data or a Collectible instance
+   * 
+   * @param data 
+   * @returns 
+   */
+  static collection<
+    C extends ResourceData[] | Collectible = ResourceData[],
+    T extends ResourceData = any
+  > (data: C) {
+    return new ResourceCollection<C, T>(data).setCollects(this);
+  }
+
+  /**
    * Get the original resource data
    */
-  data (): R {
-    return this.resource;
+  data () {
+    return this.toArray();
   }
 
   /**
@@ -77,48 +83,32 @@ export class JsonGenericResource<
 
       let data: any = Array.isArray(resource) ? [...resource] : { ...resource };
 
-      if (Array.isArray(data) && this.collects) {
-        data = data.map(item => new this.collects!(item).data())
-        this.resource = data
-      }
-
       if (typeof data.data !== "undefined") {
         data = data.data;
       }
 
-      if ((<any>this.resource).pagination && data.data && Array.isArray(data.data)) {
-        delete data.pagination;
-      }
-
       this.body = { data };
-
-      if (Array.isArray(this.body.data) && (<any>this.resource).pagination) {
-        this.body.meta = {
-          pagination: (<any>this.resource).pagination,
-        };
-      }
     }
 
-    // if (this.collects) console.log(this.body, this.constructor.name, this.collects.name)
     return this;
   }
 
   /**
-   * Convert resource to array format (for collections)
+   * Flatten resource to array format (for collections) or return original data for single resources
    *
    * @returns
    */
-  toArray () {
+  toArray (): R extends NonCollectible ? R['data'] : R {
     this.called.toArray = true;
     this.json()
 
-    let data: any = Array.isArray(this.resource) ? [...this.resource] : { ...this.resource };
+    let data = Array.isArray(this.resource) ? [...this.resource] : { ...this.resource };
 
-    if (typeof data.data !== "undefined") {
+    if (!Array.isArray(data) && typeof data.data !== "undefined") {
       data = data.data;
     }
 
-    return data;
+    return data as never;
   }
 
   /**
@@ -131,8 +121,11 @@ export class JsonGenericResource<
     this.called.additional = true;
     this.json()
 
-    delete extra.data;
-    delete extra.pagination;
+    if (extra.data) {
+      this.body.data = Array.isArray(this.body.data)
+        ? [...this.body.data, ...extra.data]
+        : { ...this.body.data, ...extra.data };
+    }
 
     this.body = {
       ...this.body,
@@ -142,9 +135,9 @@ export class JsonGenericResource<
     return this;
   }
 
-  response (): ServerResponse<GenericBody<R>>
-  response (res: H3Event['res']): ServerResponse<GenericBody<R>>
-  response (res?: H3Event['res']): ServerResponse<GenericBody<R>> {
+  response (): ServerResponse<ResourceBody<R>>
+  response (res: H3Event['res']): ServerResponse<ResourceBody<R>>
+  response (res?: H3Event['res']): ServerResponse<ResourceBody<R>> {
     this.called.toResponse = true;
 
     return new ServerResponse(res ?? this.res as never, this.body);
@@ -157,8 +150,8 @@ export class JsonGenericResource<
    * @param onrejected  Callback to handle the rejected state of the promise, receiving the error reason
    * @returns A promise that resolves to the result of the onfulfilled or onrejected callback 
    */
-  then<TResult1 = GenericBody<R>, TResult2 = never> (
-    onfulfilled?: ((value: GenericBody<R>) => TResult1 | PromiseLike<TResult1>) | null,
+  then<TResult1 = ResourceBody<R>, TResult2 = never> (
+    onfulfilled?: ((value: ResourceBody<R>) => TResult1 | PromiseLike<TResult1>) | null,
     onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null,
   ): Promise<TResult1 | TResult2> {
     this.called.then = true;
@@ -171,5 +164,27 @@ export class JsonGenericResource<
     }
 
     return resolved;
+  }
+
+  /**
+   * Promise-like catch method to handle rejected state of the promise
+   * 
+   * @param onrejected 
+   * @returns 
+   */
+  catch<TResult = never> (
+    onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null,
+  ): Promise<ResourceBody<R> | TResult> {
+    return this.then(undefined, onrejected);
+  }
+
+  /**
+   * Promise-like finally method to handle cleanup after promise is settled
+   * 
+   * @param onfinally 
+   * @returns 
+   */
+  finally (onfinally?: (() => void) | null) {
+    return this.then(onfinally, onfinally);
   }
 }

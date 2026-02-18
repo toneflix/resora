@@ -1,15 +1,17 @@
 import type { H3Event } from "h3";
-import { NonCollectible, ResourceBody, ResourceData } from "src/types";
+import { ResourceData, Collectible, CollectionBody } from "src/types";
 import { ServerResponse } from "./ServerResponse";
 import type { Response } from "express";
+import { Resource } from "./Resource";
 
 /**
- * JsonResource class to handle API resource transformation and response building
+ * ResourceCollection class to handle API resource transformation and response building for collections
  */
-export class JsonResource<R extends ResourceData | NonCollectible = ResourceData> {
+export class ResourceCollection<R extends ResourceData[] | Collectible = ResourceData[], T extends ResourceData = any> {
   [key: string]: any;
-  public body: ResourceBody<R> = { data: {} as any };
+  public body: CollectionBody<R> = { data: [] as any };
   public resource: R;
+  public collects?: typeof Resource<T>;
   private called: {
     json?: boolean
     data?: boolean
@@ -20,33 +22,10 @@ export class JsonResource<R extends ResourceData | NonCollectible = ResourceData
     toResponse?: boolean
   } = {};
 
+  constructor(rsc: R)
+  constructor(rsc: R, res: Response)
   constructor(rsc: R, private res?: Response) {
     this.resource = rsc;
-
-    /**
-     * Copy properties from rsc to this instance for easy 
-     * access, but only if data is not an array
-     */
-    if (!Array.isArray(this.resource.data ?? this.resource)) {
-      for (const key of Object.keys(this.resource.data ?? this.resource)) {
-        if (!(key in this)) {
-          Object.defineProperty(this, key, {
-            enumerable: true,
-            configurable: true,
-            get: () => {
-              return this.resource.data?.[key] ?? (<any>this.resource)[key]
-            },
-            set: (value) => {
-              if ((<any>this.resource).data && this.resource.data[key]) {
-                this.resource.data[key] = value;
-              } else {
-                (<any>this.resource)[key] = value;
-              }
-            },
-          })
-        }
-      }
-    }
   }
 
   /**
@@ -61,40 +40,44 @@ export class JsonResource<R extends ResourceData | NonCollectible = ResourceData
    * 
    * @returns 
    */
-  private json () {
+  json () {
     if (!this.called.json) {
       this.called.json = true;
 
-      const resource = this.data();
+      let data: ResourceData[] = this.data() as never;
 
-      let data: any = Array.isArray(resource) ? [...resource] : { ...resource };
-
-      if (typeof data.data !== "undefined") {
-        data = data.data;
+      if (this.collects) {
+        data = data.map((item: any) => new this.collects!(item).data())
       }
 
-      this.body = { data };
+      this.body = { data } as CollectionBody<R>;
+
+      if (!Array.isArray(this.resource)) {
+        if (this.resource.pagination && this.resource.cursor)
+          this.body.meta = {
+            pagination: this.resource.pagination,
+            cursor: this.resource.cursor
+          } as CollectionBody<R>['meta'];
+        else if (this.resource.pagination)
+          this.body.meta = { pagination: this.resource.pagination } as CollectionBody<R>['meta'];
+        else if (this.resource.cursor)
+          this.body.meta = { cursor: this.resource.cursor } as CollectionBody<R>['meta'];
+      }
     }
 
     return this;
   }
 
   /**
-   * Flatten resource to array format (for collections) or return original data for single resources
+   * Flatten resource to return original data
    *
    * @returns
    */
-  toArray (): R extends NonCollectible ? R['data'] : R {
+  toArray (): (R extends Collectible ? R['data'][number] : R extends ResourceData[] ? R[number] : never)[] {
     this.called.toArray = true;
     this.json()
 
-    let data = Array.isArray(this.resource) ? [...this.resource] : { ...this.resource };
-
-    if (!Array.isArray(data) && typeof data.data !== "undefined") {
-      data = data.data;
-    }
-
-    return data as never;
+    return Array.isArray(this.resource) ? [...this.resource] : [...this.resource.data as never[]];
   }
 
   /**
@@ -107,10 +90,11 @@ export class JsonResource<R extends ResourceData | NonCollectible = ResourceData
     this.called.additional = true;
     this.json()
 
-    if (extra.data) {
-      this.body.data = Array.isArray(this.body.data)
-        ? [...this.body.data, ...extra.data]
-        : { ...this.body.data, ...extra.data };
+    delete extra.cursor;
+    delete extra.pagination;
+
+    if (extra.data && Array.isArray(this.body.data)) {
+      this.body.data = [...this.body.data, ...extra.data] as never;
     }
 
     this.body = {
@@ -121,12 +105,17 @@ export class JsonResource<R extends ResourceData | NonCollectible = ResourceData
     return this;
   }
 
-  response (): ServerResponse<ResourceBody<R>>
-  response (res: H3Event['res']): ServerResponse<ResourceBody<R>>
-  response (res?: H3Event['res']): ServerResponse<ResourceBody<R>> {
+  response (): ServerResponse<CollectionBody<R>>
+  response (res: H3Event['res']): ServerResponse<CollectionBody<R>>
+  response (res?: H3Event['res']): ServerResponse<CollectionBody<R>> {
     this.called.toResponse = true;
 
     return new ServerResponse(res ?? this.res as never, this.body);
+  }
+
+  setCollects (collects: typeof Resource<T>) {
+    this.collects = collects;
+    return this;
   }
 
   /**
@@ -136,8 +125,8 @@ export class JsonResource<R extends ResourceData | NonCollectible = ResourceData
    * @param onrejected  Callback to handle the rejected state of the promise, receiving the error reason
    * @returns A promise that resolves to the result of the onfulfilled or onrejected callback 
    */
-  then<TResult1 = ResourceBody<R>, TResult2 = never> (
-    onfulfilled?: ((value: ResourceBody<R>) => TResult1 | PromiseLike<TResult1>) | null,
+  then<TResult1 = CollectionBody<R>, TResult2 = never> (
+    onfulfilled?: ((value: CollectionBody<R>) => TResult1 | PromiseLike<TResult1>) | null,
     onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null,
   ): Promise<TResult1 | TResult2> {
     this.called.then = true;
@@ -160,7 +149,7 @@ export class JsonResource<R extends ResourceData | NonCollectible = ResourceData
    */
   catch<TResult = never> (
     onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null,
-  ): Promise<ResourceBody<R> | TResult> {
+  ): Promise<CollectionBody<R> | TResult> {
     return this.then(undefined, onrejected);
   }
 

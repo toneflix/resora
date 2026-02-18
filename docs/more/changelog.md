@@ -1,0 +1,36 @@
+# Changelog
+
+All notable changes to Resora will be documented in this file.
+
+The format follows semantic versioning principles.
+
+## [Unreleased]
+
+### Planned
+
+- Case customization strategies
+- Custom response structure configuration
+- Metadata customization hooks
+- `withResponse()` transport hook
+- Data wrapping configuration
+- Conditional attribute helpers
+
+## [0.1.0] - Initial Release
+
+### Added
+
+- Automatic pagination extraction
+- Automatic cursor extraction
+- Structured JSON envelope
+- Chainable transformation API
+- `.response()` transport binding
+- Header, cookie, and status support
+- Awaitable resource instances
+- Introduced `GenericResource` for single resources, collections, and pagination support.
+- Added `ResourceCollection` for transforming resource collections with pagination and cursor metadata.
+- Implemented base `Resource` class for single resource transformation with additional properties support.
+- Created `ServerResponse` class for handling HTTP response in connect-style frameworks (Express) and H3.
+- Developed comprehensive documentation for API usage, including guides for getting started and writing resources.
+- Established a structured changelog and roadmap for future enhancements.
+
+Initial stable foundation for structured API response handling.

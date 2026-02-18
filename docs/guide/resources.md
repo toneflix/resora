@@ -1,0 +1,170 @@
+# Resources
+
+Resources are created using the **`Resource`** class, which is a transformation layer responsible for shaping a single domain object into a predictable JSON response structure.
+
+It does not merely wrap data — it defines **how raw data becomes API output**.
+
+A `Resource`:
+
+- Accepts a single object (plain object, model instance, DTO, etc.)
+- Controls how that object is serialized
+- Wraps the transformed output inside a standardized `{ data: ... }` envelope
+- Supports attaching additional top-level fields
+- Can behave like a Promise (it is awaitable)
+- Is designed to be extended for custom transformation logic
+
+Think of it as the boundary between your internal data structures and your public API contract.
+
+Instead of returning raw objects from your application layer, a `Resource` ensures:
+
+- Response consistency
+- Centralized formatting logic
+- Extensibility without mutating original data
+- Clean separation between domain logic and presentation logic
+
+When extended, the `data()` method becomes the canonical place where transformation rules live.
+
+## Creating a Resource
+
+```ts
+import { Resource } from 'resora';
+
+const user = { id: 1, name: 'John' };
+
+const resource = new Resource(user);
+```
+
+## Accessing Raw Data
+
+```ts
+resource.data();
+```
+
+Returns the original resource payload unless overridden.
+
+```json
+{ "id": 1, "name": "John" }
+```
+
+## JSON Response Format
+
+Calling `.json()` prepares a structured response:
+
+```ts
+resource.json().body;
+```
+
+Produces:
+
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "John"
+  }
+}
+```
+
+## Adding Additional Data
+
+You may attach extra top-level fields:
+
+```ts
+resource.additional({ status: 'success' }).body;
+```
+
+Result:
+
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "John"
+  },
+  "status": "success"
+}
+```
+
+`additional()` is chainable.
+
+## Building a Response Object
+
+```ts
+const response = resource.response(res);
+```
+
+This returns a response-compatible object.
+The structure is framework-agnostic.
+
+## Thenable Support (Async/Await)
+
+`Resource` is promise-like.
+
+```ts
+const result = await resource;
+```
+
+Resolves to:
+
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "John"
+  }
+}
+```
+
+This allows usage like:
+
+```ts
+return await new UserResource(user);
+```
+
+# Extending Resource
+
+Resources are meant to be extended.
+
+## Custom Transformation
+
+```ts
+class UserResource extends Resource {
+  data() {
+    return {
+      id: this.id,
+      name: this.name,
+      custom: 'data',
+    };
+  }
+}
+```
+
+```ts
+new UserResource({ id: 1, name: 'John' }).data();
+```
+
+Result:
+
+```json
+{
+  "id": 1,
+  "name": "John",
+  "custom": "data"
+}
+```
+
+## Accessing Original Payload
+
+Inside extended classes:
+
+- `this.toArray()` returns original payload
+- Properties are proxied (`this.id`, `this.name`)
+
+## Chaining Still Works
+
+Extended resources retain:
+
+- `.json()`
+- `.additional()`
+- `.response()`
+- `await` support

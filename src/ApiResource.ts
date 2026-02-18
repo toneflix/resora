@@ -1,12 +1,12 @@
-import { JsonResource } from "src";
+import { Resource } from "src";
 import { Resource } from "src/types";
 
 /**
- * ApiResource function to return the JsonResource instance
+ * ApiResource function to return the Resource instance
  * 
- * @param instance JsonResource instance
- * @returns JsonResource instance
+ * @param instance Resource instance
+ * @returns Resource instance
  */
-export function ApiResource<R extends Resource> (instance: JsonResource<R>): JsonResource<R> {
+export function ApiResource<R extends Resource> (instance: Resource<R>): Resource<R> {
     return instance;
 }

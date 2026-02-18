@@ -1,34 +1,34 @@
 import { Collectible, ResourceData } from "src/types";
 import { describe, expect, it } from "vitest";
 
-import { JsonResource } from "src";
-import { JsonResourceCollection } from "src/JsonResourceCollection";
+import { Resource } from "src";
+import { ResourceCollection } from "src/ResourceCollection";
 
 describe('Core', () => {
-    it('should create a JsonResource instance', () => {
+    it('should create a Resource instance', () => {
         const resource = { id: 1, name: 'Test Resource' };
-        const jsonResource = new JsonResource(resource);
+        const jsonResource = new Resource(resource);
 
-        expect(jsonResource).toBeInstanceOf(JsonResource);
+        expect(jsonResource).toBeInstanceOf(Resource);
     });
 
     it('should return the original resource data', () => {
         const resource = { id: 1, name: 'Test Resource' };
-        const jsonResource = new JsonResource(resource);
+        const jsonResource = new Resource(resource);
 
         expect(jsonResource.data()).toEqual(resource);
     });
 
     it('should convert resource to JSON response format', () => {
         const resource = { id: 1, name: 'Test Resource' };
-        const jsonResource = new JsonResource(resource);
+        const jsonResource = new Resource(resource);
 
-        expect((jsonResource as any).json().body).toEqual({ data: resource });
+        expect(jsonResource.json().body).toEqual({ data: resource });
     });
 
     it('should allow chaining of methods', () => {
         const resource = { id: 1, name: 'Test Resource' };
-        const jsonResource = new JsonResource(resource);
+        const jsonResource = new Resource(resource);
 
         expect(jsonResource.additional({ meta: 'test' }).body).toEqual({
             data: resource,
@@ -38,7 +38,7 @@ describe('Core', () => {
 
     it('should build a response object', () => {
         const resource = { id: 1, name: 'Test Resource' };
-        const jsonResource = new JsonResource(resource);
+        const jsonResource = new Resource(resource);
 
         const response = jsonResource.response({} as any);
         expect(response).toBeInstanceOf(Object);
@@ -46,7 +46,7 @@ describe('Core', () => {
 
     it('should allow chaining with async/await', async () => {
         const resource = { id: 1, name: 'Test Resource' };
-        const jsonResource = new JsonResource(resource);
+        const jsonResource = new Resource(resource);
 
         const response = await jsonResource.then(res => res);
         expect(response).toEqual({ data: resource });
@@ -54,8 +54,8 @@ describe('Core', () => {
 });
 
 describe('Extending Resources', () => {
-    it('should allow extending the JsonResource class', () => {
-        class CustomResource extends JsonResource {
+    it('should allow extending the Resource class', () => {
+        class CustomResource extends Resource {
             data () {
                 return this.toArray();
             }
@@ -64,12 +64,12 @@ describe('Extending Resources', () => {
         const resource = { id: 1, name: 'Test Resource' };
         const customResource = new CustomResource(resource);
 
-        expect(customResource).toBeInstanceOf(JsonResource);
+        expect(customResource).toBeInstanceOf(Resource);
         expect(customResource.data()).toEqual(resource);
     });
 
     it('should handle custom data in the extended class', () => {
-        class CustomResource extends JsonResource {
+        class CustomResource extends Resource {
             data () {
                 return {
                     id: this.id,
@@ -86,7 +86,7 @@ describe('Extending Resources', () => {
     });
 
     it('should allow chaining of methods in extended classes', () => {
-        class CustomResource extends JsonResource {
+        class CustomResource extends Resource {
             data () {
                 return this.toArray();
             }
@@ -100,11 +100,9 @@ describe('Extending Resources', () => {
             meta: 'test',
         });
     });
-});
 
-describe('Extending Collections', () => {
-    it('should handle non paginated collections', () => {
-        class CustomResource extends JsonResource {
+    it('can make collections from the Resource class', () => {
+        class CustomResource extends Resource {
             data () {
                 return {
                     id: this.id,
@@ -114,7 +112,28 @@ describe('Extending Collections', () => {
             }
         }
 
-        class CustomCollection<R extends ResourceData[]> extends JsonResourceCollection<R> {
+        const resource = [{ id: 1, name: 'Test Resource' }];
+        const collection = CustomResource.collection(resource);
+
+        expect(collection.json().body).toEqual({ data: [{ id: 1, name: 'Test Resource', custom: 'data' }] });
+        expect(collection).toBeInstanceOf(ResourceCollection);
+        expect(collection.data()).toEqual(resource);
+    });
+});
+
+describe('Extending Collections', () => {
+    it('should handle non paginated collections', () => {
+        class CustomResource extends Resource {
+            data () {
+                return {
+                    id: this.id,
+                    name: this.name,
+                    custom: 'data'
+                };
+            }
+        }
+
+        class CustomCollection<R extends ResourceData[]> extends ResourceCollection<R> {
             collects = CustomResource;
 
             data () {
@@ -124,11 +143,11 @@ describe('Extending Collections', () => {
 
         const resource = [{ id: 1, name: 'Test Resource' }];
         const customResource = new CustomCollection(resource);
-        expect((<any>customResource).json().body).toEqual({ data: [{ id: 1, name: 'Test Resource', custom: 'data' }] });
+        expect(customResource.json().body).toEqual({ data: [{ id: 1, name: 'Test Resource', custom: 'data' }] });
     });
 
     it('should handle pagination in collections', () => {
-        class CustomResource extends JsonResource {
+        class CustomResource extends Resource {
             data () {
                 return {
                     id: this.id,
@@ -138,7 +157,7 @@ describe('Extending Collections', () => {
             }
         }
 
-        class CustomCollection<R extends Collectible> extends JsonResourceCollection<R> {
+        class CustomCollection<R extends Collectible> extends ResourceCollection<R> {
             collects = CustomResource;
 
             data () {
@@ -149,14 +168,14 @@ describe('Extending Collections', () => {
         const resource = { data: [{ id: 1, name: 'Test Resource' }], pagination: { currentPage: 1, total: 10 } };
         const customResource = new CustomCollection(resource);
 
-        expect((<any>customResource).json().body).toEqual({
+        expect(customResource.json().body).toEqual({
             data: [{ id: 1, name: 'Test Resource', custom: 'data' }],
             meta: { pagination: resource.pagination },
         });
     });
 
     it('should handle cursor pagination in collections', () => {
-        class CustomResource extends JsonResource {
+        class CustomResource extends Resource {
             data () {
                 return {
                     id: this.id,
@@ -166,7 +185,7 @@ describe('Extending Collections', () => {
             }
         }
 
-        class CustomCollection<R extends Collectible> extends JsonResourceCollection<R> {
+        class CustomCollection<R extends Collectible> extends ResourceCollection<R> {
             collects = CustomResource;
 
             data () {
@@ -177,14 +196,14 @@ describe('Extending Collections', () => {
         const resource = { data: [{ id: 1, name: 'Test Resource' }], cursor: { previous: 'abc', next: 'def' } };
         const customResource = new CustomCollection(resource);
 
-        expect((<any>customResource).json().body).toEqual({
+        expect(customResource.json().body).toEqual({
             data: [{ id: 1, name: 'Test Resource', custom: 'data' }],
             meta: { cursor: resource.cursor },
         });
     });
 
     it('should handle both pagination and cursor in collections', () => {
-        class CustomResource extends JsonResource {
+        class CustomResource extends Resource {
             data () {
                 return {
                     id: this.id,
@@ -194,7 +213,7 @@ describe('Extending Collections', () => {
             }
         }
 
-        class CustomCollection<R extends Collectible> extends JsonResourceCollection<R> {
+        class CustomCollection<R extends Collectible> extends ResourceCollection<R> {
             collects = CustomResource;
 
             data () {
@@ -209,14 +228,14 @@ describe('Extending Collections', () => {
         };
         const customResource = new CustomCollection(resource);
 
-        expect((<any>customResource).json().body).toEqual({
+        expect(customResource.json().body).toEqual({
             data: [{ id: 1, name: 'Test Resource', custom: 'data' }],
             meta: { pagination: resource.pagination, cursor: resource.cursor },
         });
     });
 
     it('should allow chaining of methods in extended collection classes', () => {
-        class CustomResource extends JsonResource {
+        class CustomResource extends Resource {
             data () {
                 return {
                     id: this.id,
@@ -226,7 +245,7 @@ describe('Extending Collections', () => {
             }
         }
 
-        class CustomCollection<R extends Collectible> extends JsonResourceCollection<R> {
+        class CustomCollection<R extends Collectible> extends ResourceCollection<R> {
             collects = CustomResource;
 
             data () {

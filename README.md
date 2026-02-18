@@ -33,9 +33,19 @@ Resora introduces a dedicated **response transformation layer** that removes the
 
 ---
 
-## Usage Example
+## Basic Example
 
 ### Single Resource
+
+```ts
+import { Resource } from 'resora';
+
+class UserResource extends Resource {
+  data() {
+    return this.toArray();
+  }
+}
+```
 
 ```ts
 return new UserResource(user).additional({
@@ -60,6 +70,18 @@ Response:
 ---
 
 ### Collection with Pagination
+
+```ts
+import { ResourceCollection } from 'resora';
+
+class UserCollection<R extends User[]> extends ResourceCollection<R> {
+  collects = UserResource;
+
+  data() {
+    return this.toArray();
+  }
+}
+```
 
 ```ts
 return new UserCollection({
@@ -130,7 +152,7 @@ It works with:
 
 - Express
 - H3
-- Any framework exposing request and response objects
+- Any application or framework that supports Connect-style middleware
 
 Adapters can be added without changing application logic.
 

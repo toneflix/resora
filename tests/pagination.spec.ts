@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { JsonResource } from "src";
-import { JsonResourceCollection } from "src/JsonResourceCollection";
+import { Resource } from "src";
+import { ResourceCollection } from "src/ResourceCollection";
 
-describe('JsonResource Pagination', () => {
+describe('Resource Pagination', () => {
     it('should handle pagination data correctly', () => {
         const resource = {
             data: [{ id: 1 }, { id: 2 }],
@@ -15,8 +15,8 @@ describe('JsonResource Pagination', () => {
             },
         };
 
-        const jsonResource = new JsonResourceCollection(resource);
-        const jsonResponse = (jsonResource as any).json().body;
+        const jsonResource = new ResourceCollection(resource);
+        const jsonResponse = jsonResource.json().body;
 
         expect(jsonResponse).toEqual({
             data: [{ id: 1 }, { id: 2 }],
@@ -43,8 +43,8 @@ describe('JsonResource Pagination', () => {
             },
         };
 
-        const jsonResource = new JsonResource(resource);
-        const jsonResponse = (jsonResource as any).json().body;
+        const jsonResource = new Resource(resource);
+        const jsonResponse = jsonResource.json().body;
         expect(jsonResponse).toEqual({ data: resource });
     });
 
@@ -59,8 +59,8 @@ describe('JsonResource Pagination', () => {
             },
         };
 
-        const jsonResource = new JsonResource(resource);
-        const jsonResponse = (jsonResource as any).json().body;
+        const jsonResource = new Resource(resource);
+        const jsonResponse = jsonResource.json().body;
 
         expect(jsonResponse).toEqual({ data: resource.data });
     });
@@ -76,8 +76,8 @@ describe('JsonResource Pagination', () => {
             },
         };
 
-        const jsonResource = new JsonResourceCollection(resource);
-        const jsonResponse = (jsonResource as any).json().body;
+        const jsonResource = new ResourceCollection(resource);
+        const jsonResponse = jsonResource.json().body;
 
         expect(jsonResponse).toEqual({
             data: [],
@@ -97,8 +97,8 @@ describe('JsonResource Pagination', () => {
             data: [{ id: 1 }, { id: 2 }],
         };
 
-        const jsonResource = new JsonResourceCollection(resource);
-        const jsonResponse = (jsonResource as any).json().body;
+        const jsonResource = new ResourceCollection(resource);
+        const jsonResponse = jsonResource.json().body;
 
         expect(jsonResponse).toEqual({
             data: [{ id: 1 }, { id: 2 }],

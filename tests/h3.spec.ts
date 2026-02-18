@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { H3 } from "h3";
-import { JsonResource } from "src";
-import { JsonResourceCollection } from "src/JsonResourceCollection";
+import { Resource } from "src";
+import { ResourceCollection } from "src/ResourceCollection";
 
 let app: H3
 
@@ -15,7 +15,7 @@ describe('H3 Requests', () => {
         const resource = { id: 1, name: 'Test Resource' };
 
         app.use('/test', () => {
-            return new JsonResource(resource);
+            return new Resource(resource);
         });
 
         const response = await app.fetch(new Request('http://localhost/test', { method: 'GET' }));
@@ -27,7 +27,7 @@ describe('H3 Requests', () => {
         const resource = { id: 1, name: 'Test Resource' };
 
         app.use('/test', () => {
-            return new JsonResource(resource).additional({ meta: 'test' });
+            return new Resource(resource).additional({ meta: 'test' });
         });
 
         const response = await app.fetch(new Request('http://localhost/test', { method: 'GET' }));
@@ -42,7 +42,7 @@ describe('H3 Requests', () => {
         const resource = { id: 1, name: 'Test Resource' };
 
         app.use('/test', async () => {
-            return await (new JsonResource(resource) as any).json();
+            return await new Resource(resource).json();
         });
 
         const response = await app.fetch(new Request('http://localhost/test', { method: 'GET' }));
@@ -53,7 +53,7 @@ describe('H3 Requests', () => {
         const resource = { id: 1, name: 'Test Resource' };
 
         app.use('/test', async ({ res }) => {
-            return new JsonResource(resource)
+            return new Resource(resource)
                 .response(res)
                 .header('X-Custom-Header', 'CustomValue');
         });
@@ -66,7 +66,7 @@ describe('H3 Requests', () => {
         const resource = { id: 1, name: 'Test Resource' };
 
         app.use('/test', async ({ res }) => {
-            return new JsonResource(resource)
+            return new Resource(resource)
                 .response(res)
                 .setCookie('testCookie', 'testValue', { path: '/', maxAge: 3600 });
         });
@@ -79,7 +79,7 @@ describe('H3 Requests', () => {
         const resource = { id: 1, name: 'Test Resource' };
 
         app.use('/test', async ({ res }) => {
-            return new JsonResource(resource)
+            return new Resource(resource)
                 .response(res)
                 .setStatusCode(201);
         });
@@ -100,7 +100,7 @@ describe('H3 Requests', () => {
         };
 
         app.use('/test', () => {
-            return new JsonResourceCollection(resource)
+            return new ResourceCollection(resource)
         });
 
         const response = await app.fetch(new Request('http://localhost/test', { method: 'GET' }));
@@ -118,7 +118,7 @@ describe('H3 Requests', () => {
         const resource = { data: { id: 1, name: 'Test Resource' } };
 
         app.use('/test', () => {
-            return new JsonResource(resource);
+            return new Resource(resource);
         });
 
         const response = await app.fetch(new Request('http://localhost/test', { method: 'GET' }));
@@ -141,7 +141,7 @@ describe('H3 Requests', () => {
         };
 
         app.use('/test', () => {
-            return new JsonResourceCollection(resource);
+            return new ResourceCollection(resource);
         });
 
         const response = await app.fetch(new Request('http://localhost/test', { method: 'GET' }));

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { JsonResource } from "src";
-import { JsonResourceCollection } from "src/JsonResourceCollection";
+import { Resource } from "src";
+import { ResourceCollection } from "src/ResourceCollection";
 import express from "express";
 import supertest from "supertest";
 
@@ -15,7 +15,7 @@ describe('Connect-style Requests (Express)', () => {
     it('should output correct JSON response', async () => {
         const resource = { id: 1, name: 'Test Resource' };
         app.get('/test', async (req, res) => {
-            return await (new JsonResource(resource, res) as any).json();
+            return await new Resource(resource, res).json();
         });
 
         const response = await supertest(app).get('/test');
@@ -25,7 +25,7 @@ describe('Connect-style Requests (Express)', () => {
     it('should allow chaining of methods', async () => {
         const resource = { id: 1, name: 'Test Resource' };
         app.get('/test', async (req, res) => {
-            return await new JsonResource(resource, res).additional({ meta: 'test' });
+            return await new Resource(resource, res).additional({ meta: 'test' });
         });
 
         const response = await supertest(app).get('/test');
@@ -38,7 +38,7 @@ describe('Connect-style Requests (Express)', () => {
     it('should allow chaining with async/await', async () => {
         const resource = { id: 1, name: 'Test Resource' };
         app.get('/test', async (req, res) => {
-            return await (new JsonResource(resource, res) as any).json();
+            return await new Resource(resource, res).json();
         });
 
         const response = await supertest(app).get('/test');
@@ -48,7 +48,7 @@ describe('Connect-style Requests (Express)', () => {
     it('should allow setting response headers', async () => {
         const resource = { id: 1, name: 'Test Resource' };
         app.get('/test', async (req, res) => {
-            return await new JsonResource(resource, res)
+            return await new Resource(resource, res)
                 .response()
                 .header('X-Custom-Header', 'CustomValue');
         });
@@ -60,7 +60,7 @@ describe('Connect-style Requests (Express)', () => {
     it('should allow setting cookies', async () => {
         const resource = { id: 1, name: 'Test Resource' };
         app.get('/test', async (req, res) => {
-            return await new JsonResource(resource, res)
+            return await new Resource(resource, res)
                 .response()
                 .setCookie('testCookie', 'testValue', { path: '/', maxAge: 3600 });
         });
@@ -72,7 +72,7 @@ describe('Connect-style Requests (Express)', () => {
     it('should allow setting status code', async () => {
         const resource = { id: 1, name: 'Test Resource' };
         app.get('/test', async (req, res) => {
-            return await new JsonResource(resource, res)
+            return await new Resource(resource, res)
                 .response()
                 .setStatusCode(201);
         });
@@ -93,7 +93,7 @@ describe('Connect-style Requests (Express)', () => {
         };
 
         app.get('/test', async (req, res) => {
-            return await (new JsonResourceCollection(resource, res) as any).json();
+            return await new ResourceCollection(resource, res).json();
         });
 
         const response = await supertest(app).get('/test');
@@ -109,7 +109,7 @@ describe('Connect-style Requests (Express)', () => {
         const resource = { data: { id: 1, name: 'Test Resource' } };
 
         app.get('/test', async (req, res) => {
-            return await (new JsonResource(resource, res) as any).json();
+            return await new Resource(resource, res).json();
         });
 
         const response = await supertest(app).get('/test');
@@ -128,7 +128,7 @@ describe('Connect-style Requests (Express)', () => {
         };
 
         app.get('/test', async (req, res) => {
-            return await (new JsonResourceCollection(resource, res) as any).json();
+            return await new ResourceCollection(resource, res).json();
         });
 
         const response = await supertest(app).get('/test');
