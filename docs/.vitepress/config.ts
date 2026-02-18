@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  dir: 'resora',
   title: "Resora",
   description: "A structured API response layer for Node.js and TypeScript with automatic JSON responses, collection support, and pagination handling",
   themeConfig: {
