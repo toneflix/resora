@@ -12,6 +12,7 @@ export default defineConfig([
     },
     {
         dts: false,
+        minify: true,
         tsconfig: 'tsconfig.json',
         entry: ['src/cli/index.ts'],
         platform: 'node',
