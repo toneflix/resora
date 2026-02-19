@@ -1,0 +1,15 @@
+import { Resource } from 'resora'
+
+/**
+ * {{ResourceName}}
+ */
+export default class {{ResourceName}} extends Resource {
+    /**
+     * Transform the resource into a plain JavaScript object.
+     *
+     * @memberof {{ResourceName}}
+     */
+    data () {
+        return this.toArray()
+    }
+}

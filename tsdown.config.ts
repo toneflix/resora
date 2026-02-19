@@ -10,4 +10,13 @@ export default defineConfig([
         format: ['esm', 'cjs'],
         skipNodeModulesBundle: true,
     },
+    {
+        dts: false,
+        tsconfig: 'tsconfig.json',
+        entry: ['src/cli/index.ts'],
+        platform: 'node',
+        outDir: 'bin',
+        format: ['esm'],
+        skipNodeModulesBundle: true,
+    },
 ])

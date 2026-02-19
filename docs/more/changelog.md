@@ -15,6 +15,20 @@ The format follows semantic versioning principles.
 - Data wrapping configuration
 - Conditional attribute helpers
 
+## [0.1.1] - Patch Release
+
+### Changed
+
+- Enhanced documentation for configuration and resource generation processes.
+- Updated types to reflect new resource definitions and added metadata types.
+
+### Added
+
+- Introduced a CLI application for generating `Resource` and `ResourceCollection` classes.
+- Added commands for creating single resources, collections, and both simultaneously.
+- Implemented configuration file support for customizing behavior.
+- Created stubs for resource and collection classes to streamline generation.
+
 ## [0.1.0] - Initial Release
 
 ### Added

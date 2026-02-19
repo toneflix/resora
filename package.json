@@ -1,6 +1,6 @@
 {
   "name": "resora",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A structured API response layer for Node.js and TypeScript with automatic JSON responses, collection support, and pagination handling.",
   "keywords": [
     "api",
@@ -37,10 +37,16 @@
   },
   "files": [
     "dist",
+    "stubs",
+    "bin",
     "README.md",
     "LICENSE"
   ],
+  "bin": {
+    "resora": "bin/index.mjs"
+  },
   "scripts": {
+    "cmd": "tsx src/cli/index.ts",
     "lint": "eslint",
     "test": "pnpm vitest",
     "test:coverage": "pnpm vitest --coverage --watch=false",
@@ -74,5 +80,8 @@
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@h3ravel/musket": "^0.10.1"
   }
 }

@@ -6,7 +6,7 @@ export interface ResourceData {
     [key: string]: any;
 }
 
-export interface Resource extends ResourceData {
+export interface ResourceDef extends ResourceData {
     cursor?: Cursor | undefined;
     pagination?: Pagination | undefined;
 }
@@ -21,13 +21,40 @@ export interface Collectible {
     pagination?: Pagination | undefined;
 }
 
-export interface ResponseData<R extends ResourceData = any> extends Resource {
+export interface ResponseData<R extends ResourceData = any> extends ResourceDef {
     data: R;
     meta?: MetaData | undefined;
 };
 
+/**
+ * @description A type that represents the metadata for a paginated collection of resources. It extends the MetaData type and includes all properties of a Collectible object except for the data property. This type is used to provide additional information about the paginated collection, such as pagination details, without including the actual resource data.
+ * @example 
+ * const paginatedMeta: PaginatedMetaData = {
+ *   pagination: {
+ *     currentPage: 1,
+ *     total: 100
+ *   },
+ *   timestamp: '2024-06-01T12:00:00Z'
+ * };
+ */
 export type PaginatedMetaData<R extends Collectible = Collectible> = MetaData & Omit<R, 'data'>;
 
+/**
+ * @description A type that represents the body of a response for a collection of resources. It includes a data property, which can be either an array of ResourceData objects or a Collectible object, and an optional meta property that can contain any additional metadata related to the response. The type is generic and can be used to define the structure of the response body for API endpoints that return collections of resources.
+ * @example 
+ * const collectionResponse: CollectionBody = {
+ *   data: [
+ *     { id: 1, name: 'Resource 1' },
+ *     { id: 2, name: 'Resource 2' }
+ *   ],
+ *   meta: {
+ *     pagination: {
+ *       currentPage: 1,
+ *       total: 2
+ *     }
+ *   }
+ * };
+ */
 export interface ResponseDataCollection<R extends Collectible | undefined = undefined> extends ResourceData {
     data: R extends Collectible ? R['data'] : R;
     meta?: R extends Collectible ? PaginatedMetaData<R> | undefined : undefined;
@@ -77,6 +104,22 @@ export type ResourceBody<R extends ResourceData | NonCollectible = ResourceData>
     R extends NonCollectible ? R : { data: R }
 >
 
+/**
+ * @description A type that represents the body of a response for either a single resource or a collection of resources. 
+ * It can be either a ResourceData object, an array of ResourceData objects, a NonCollectible object, or a Collectible object. 
+ * The type also includes the meta property, which is optional and can contain any additional metadata related to the response.
+ * @example 
+ * const genericResponse: GenericBody = {
+ *   data: {
+ *     id: 1,
+ *     name: 'Resource Name',
+ *     description: 'Resource Description'
+ *   },
+ *   meta: {
+ *     timestamp: '2024-06-01T12:00:00Z'
+ *   }
+ * };
+ */
 export type GenericBody<R extends NonCollectible | Collectible | ResourceData = ResourceData> = ResponseData<
     R
 >
@@ -119,4 +162,28 @@ export interface Pagination {
 export interface Cursor {
     previous?: string | undefined;
     next?: string | undefined;
+}
+
+export interface Config {
+    /**
+     * @description The directory where resource files are stored. This is the location where the generated resource files will be saved. It should be a valid path on the file system.
+     */
+    resourcesDir: string
+    /**
+     * @description The directory where stub files are stored. Stub files are templates used for generating resource files. This should also be a valid path on the file system where the stub templates are located.
+     */
+    stubsDir: string
+    /**
+     * @description An object that defines the stub file names for different types of resources.
+     */
+    stubs: {
+        /**
+         * @description The stub file name for a resource. This stub will be used when generating a resource file.
+         */
+        resource: string
+        /**
+         * @description The stub file name for a collection resource. This stub will be used when generating a collection resource file.
+         */
+        collection: string
+    }
 }

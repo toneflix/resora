@@ -1,0 +1,157 @@
+# Configuration
+
+Resora can be customized using a project-level configuration file.
+
+By default, Resora works without configuration. However, you may define a config file to override directories, stubs, and generation behavior.
+
+## Config File Location
+
+Resora looks for a configuration file in your project root in the following order:
+
+- `resora.config.ts`
+- `resora.config.js`
+- `resora.config.cjs`
+
+The first file found will be loaded and merged with the default configuration.
+
+## Basic Example
+
+```ts
+// resora.config.ts
+import { defineConfig } from 'resora';
+
+export default defineConfig({
+  resourcesDir: 'src/http/resources',
+  stubsDir: 'stubs/resora',
+});
+```
+
+JavaScript version:
+
+```js
+// resora.config.js
+module.exports = {
+  resourcesDir: 'src/http/resources',
+  stubsDir: 'stubs/resora',
+};
+```
+
+## How Configuration Is Loaded
+
+At runtime:
+
+1. Resora loads its internal defaults.
+2. It checks for a config file in the current working directory.
+3. If found, the config is deeply merged with the defaults.
+4. User-defined values override defaults.
+
+## Available Configuration Options
+
+### **`resourcesDir`** - _src/resources_
+
+Specifies where generated Resource and Collection classes should be stored.
+
+#### Example
+
+```ts
+export default defineConfig({
+  resourcesDir: 'app/transformers',
+});
+```
+
+All generated files will now be placed inside:
+
+```
+app/transformers
+```
+
+### **`stubsDir`** - _Internal Resora stub directory_
+
+Specifies the base directory for stub templates used by the CLI generator.
+
+#### Example
+
+```ts
+export default defineConfig({
+  stubsDir: 'stubs',
+});
+```
+
+Resora will now resolve stub templates from:
+
+```
+stubs/
+```
+
+### **`stubs`** - _Default stub file names_
+
+Allows overriding specific stub files.
+
+#### Example
+
+```ts
+export default defineConfig({
+  stubs: {
+    resource: 'resource.stub',
+    collection: 'collection.stub',
+  },
+});
+```
+
+Stub resolution will now look inside:
+
+```
+<stubsDir>/<stub file name>
+```
+
+#### Custom Stub Example
+
+You can fully customize how generated resources look by overriding the stub templates.
+
+Example directory:
+
+```
+stubs/
+  resource.stub
+  collection.stub
+```
+
+Inside `resource.stub`:
+
+```ts
+import { Resource } from 'resora'
+
+export default class {{ResourceName}} extends Resource {
+  data () {
+    return this.toArray()
+  }
+}
+```
+
+The CLI will replace:
+
+- <span v-pre>`{{ResourceName}}`</span>
+- <span v-pre>`{{CollectionResourceName}}`</span>
+- <span v-pre>`{{collects = Resource}}`</span>
+- <span v-pre>`{{import = Resource}}`</span>
+
+## When Configuration Is Useful
+
+Use configuration when:
+
+- You follow a specific folder structure
+- You want fully customized resource templates
+- You are integrating Resora into a larger framework
+- You want consistency across multiple teams
+
+---
+
+## No Configuration Required
+
+If no config file is found:
+
+- Default directories are used
+- Default stub templates are used
+- CLI generation still works
+
+Resora is zero-config by default, but configurable when needed.

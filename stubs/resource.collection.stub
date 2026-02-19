@@ -1,0 +1,16 @@
+import { ResourceCollection } from 'resora'
+{{import = Resource}}
+/**
+ * {{ResourceName}}
+ */
+export default class {{ResourceName}} extends ResourceCollection {
+    {{collects = Resource}}
+    /**
+     * Transform the resource into a plain JavaScript object.
+     *
+     * @memberof {{ResourceName}}
+     */
+    data () {
+        return this.toArray()
+    }
+}

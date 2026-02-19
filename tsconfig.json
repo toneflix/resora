@@ -13,7 +13,10 @@
     "outDir": "./dist",
     "rootDir": "./",
     "types": ["node", "vitest", "express"],
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "resora": ["src/index.ts"]
+    }
   },
   "include": [
     "src/**/*",
