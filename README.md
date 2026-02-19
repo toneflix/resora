@@ -1,5 +1,11 @@
 # Resora
 
+[![NPM Downloads](https://img.shields.io/npm/dt/resora.svg)](https://www.npmjs.com/package/resora)
+[![npm version](https://img.shields.io/npm/v/resora.svg)](https://www.npmjs.com/package/resora)
+[![License](https://img.shields.io/npm/l/resora.svg)](https://github.com/toneflix/resora/blob/main/LICENSE)
+[![CI](https://github.com/toneflix/resora/actions/workflows/ci.yml/badge.svg)](https://github.com/toneflix/resora/actions/workflows/ci.yml)
+[![Deploy Docs](https://github.com/toneflix/resora/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/toneflix/resora/actions/workflows/deploy-docs.yml)
+
 Resora is a structured API response layer for Node.js and TypeScript backends.
 
 It provides a clean, explicit way to transform data into consistent JSON responses and automatically send them to the client. Resora supports single resources, collections, and pagination metadata while remaining framework-agnostic and strongly typed.
