@@ -15,6 +15,12 @@ The format follows semantic versioning principles.
 - Data wrapping configuration
 - Conditional attribute helpers
 
+## [0.1.2] - Patch Release
+
+### Fixed
+
+- Refactored CLI initialization to use `baseCommands` to register commands as intended.
+
 ## [0.1.1] - Patch Release
 
 ### Changed
