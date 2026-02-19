@@ -38,7 +38,7 @@ resora create:resource Post
 
 Generates:
 
-```
+```txt
 PostResource.ts
 ```
 
@@ -68,7 +68,7 @@ resora create:collection Post
 
 Generates:
 
-```
+```txt
 PostCollection.ts
 ```
 
@@ -98,7 +98,7 @@ resora create:all Admin
 
 Generates:
 
-```
+```txt
 AdminResource.ts
 AdminCollection.ts
 ```

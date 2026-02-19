@@ -61,7 +61,7 @@ export default defineConfig({
 
 All generated files will now be placed inside:
 
-```
+```txt
 app/transformers
 ```
 
@@ -79,7 +79,7 @@ export default defineConfig({
 
 Resora will now resolve stub templates from:
 
-```
+```txt
 stubs/
 ```
 
@@ -100,7 +100,7 @@ export default defineConfig({
 
 Stub resolution will now look inside:
 
-```
+```txt
 <stubsDir>/<stub file name>
 ```
 
@@ -110,7 +110,7 @@ You can fully customize how generated resources look by overriding the stub temp
 
 Example directory:
 
-```
+```txt
 stubs/
   resource.stub
   collection.stub
