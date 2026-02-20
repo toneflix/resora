@@ -3,7 +3,6 @@ import { dirname, join } from 'path'
 
 import { Command } from '@h3ravel/musket'
 import { Config } from 'src/types'
-import { createRequire } from 'module'
 import { defineConfig } from 'src/utility'
 
 export class CliApp {
@@ -18,7 +17,6 @@ export class CliApp {
     async loadConfig (config: Partial<Config> = {}) {
         this.config = defineConfig(config)
 
-        const require = createRequire(import.meta.url)
         const possibleConfigPaths = [
             join(process.cwd(), 'resora.config.ts'),
             join(process.cwd(), 'resora.config.js'),
@@ -28,7 +26,7 @@ export class CliApp {
         for (const configPath of possibleConfigPaths) {
             if (existsSync(configPath)) {
                 try {
-                    const { default: userConfig } = require(configPath)
+                    const { default: userConfig } = await import(configPath)
                     Object.assign(this.config, userConfig)
                     break
                 } catch (e) {
