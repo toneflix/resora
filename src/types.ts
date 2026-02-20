@@ -166,13 +166,15 @@ export interface Cursor {
 
 export interface Config {
     /**
-     * @description The directory where resource files are stored. This is the location where the generated resource files will be saved. It should be a valid path on the file system.
+     * @description The directory where resource files are stored. This is the location where the generated resource files will be saved. It should be a valid path on the file system relative to the project root.
      */
     resourcesDir: string
+
     /**
-     * @description The directory where stub files are stored. Stub files are templates used for generating resource files. This should also be a valid path on the file system where the stub templates are located.
+     * @description The directory where stub files are stored. Stub files are templates used for generating resource files. This should also be a valid path on the file system relative to the project root where the stub templates are located.
      */
     stubsDir: string
+
     /**
      * @description An object that defines the stub file names for different types of resources.
      */
@@ -181,13 +183,52 @@ export interface Config {
          * @description The stub file name for the configuration file. This stub will be used when generating the default configuration file.
          */
         config: string
+
         /**
          * @description The stub file name for a resource. This stub will be used when generating a resource file.
          */
         resource: string
+
         /**
          * @description The stub file name for a collection resource. This stub will be used when generating a collection resource file.
          */
         collection: string
+    }
+
+    /**
+     * @description This option allows you to specify the case style that should be used for the keys in API responses returned by the resources.
+     */
+    preferredCase: 'camel' | 'snake' | 'pascal' | 'kebab'
+
+    /**
+     * @description This option allows you to specify the extra properties that should be included in the response body when a resource is paginated. You can choose to include either 'meta', 'links', or both, or you can provide custom property names for these extras.
+     */
+    paginatedExtras: ['meta', 'links'] | {
+        meta?: string | undefined;
+        links?: string | undefined;
+    },
+
+    /**
+     * @description This option allows you to specify the property names that should be used for pagination links in the response body when a resource is paginated. You can provide custom property names for the pagination links, and if not specified, the default property names will be used.
+     */
+    paginatedLinks: {
+        first?: string | undefined;
+        last?: string | undefined;
+        prev?: string | undefined;
+        next?: string | undefined;
+    },
+
+    /**
+     * @description This option allows you to specify the property names that should be used for pagination metadata in the response body when a resource is paginated. You can provide custom property names for properties, and if not specified, the default property names will be used.
+     */
+    paginatedMeta: {
+        to?: string | undefined
+        from?: string | undefined
+        links?: string | undefined
+        path?: string | undefined
+        total?: string | undefined
+        per_page?: string | undefined
+        last_page?: string | undefined
+        current_page?: string | undefined
     }
 }
