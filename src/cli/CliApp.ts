@@ -8,7 +8,7 @@ import { defineConfig } from 'src/utility'
 
 export class CliApp {
     public command!: Command
-    private config: Config = {} as Config
+    protected config: Config = {} as Config
 
     constructor(config: Partial<Config> = {}) {
         this.config = defineConfig(config)
