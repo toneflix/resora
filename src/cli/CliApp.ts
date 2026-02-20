@@ -24,7 +24,7 @@ export class CliApp {
             if (existsSync(configPath)) {
                 try {
                     const { default: userConfig } = require(configPath)
-                    Object.assign(this.config, defineConfig(userConfig))
+                    Object.assign(this.config, userConfig)
                     break
                 } catch (e) {
                     console.error(`Error loading config file at ${configPath}:`, e)

@@ -1,13 +1,40 @@
 import { Config } from './types'
 import { existsSync } from 'fs'
-import { fileURLToPath } from 'url'
 import path from 'path'
 
-const __dirname = /* @__PURE__ */ path.dirname(fileURLToPath(import.meta.url))
-
-let stubsDir = path.resolve(__dirname, '../node_modules/resora/stubs')
+let stubsDir = path.resolve(process.cwd(), 'node_modules/resora/stubs')
 if (!existsSync(stubsDir)) {
-    stubsDir = path.resolve(__dirname, '../stubs')
+    stubsDir = path.resolve(process.cwd(), 'stubs')
+}
+
+export const getDefaultConfig = (): Config => {
+    return {
+        stubsDir,
+        preferredCase: 'camel',
+        paginatedExtras: ['meta', 'links'],
+        paginatedLinks: {
+            first: 'first',
+            last: 'last',
+            prev: 'prev',
+            next: 'next',
+        },
+        paginatedMeta: {
+            to: 'to',
+            from: 'from',
+            links: 'links',
+            path: 'path',
+            total: 'total',
+            per_page: 'per_page',
+            last_page: 'last_page',
+            current_page: 'current_page',
+        },
+        resourcesDir: 'src/resources',
+        stubs: {
+            config: 'resora.config.stub',
+            resource: 'resource.stub',
+            collection: 'resource.collection.stub',
+        },
+    }
 }
 
 /**
@@ -16,23 +43,16 @@ if (!existsSync(stubsDir)) {
  * @param userConfig  The user configuration to override the default configuration
  * @returns The merged configuration object
  */
-export const defineConfig = (userConfig: Partial<Omit<Config, 'stubs'>> & { stubs?: Partial<Config['stubs']> } = {}): Config => {
+export const defineConfig = (
+    userConfig: Partial<Omit<Config, 'stubs'>> & { stubs?: Partial<Config['stubs']> } = {}
+): Config => {
+    const defaultConfig = getDefaultConfig()
+
     return Object.assign(
-        {
-            resourcesDir: 'src/resources',
-            stubsDir,
-            stubs: {
-                config: 'resora.config.stub',
-                resource: 'resource.stub',
-                collection: 'resource.collection.stub',
-            },
-        },
+        defaultConfig,
         userConfig,
         {
-            stubs: Object.assign({
-                config: 'resora.config.stub',
-                resource: 'resource.stub',
-                collection: 'resource.collection.stub',
-            }, userConfig.stubs || {}),
-        })
+            stubs: Object.assign(defaultConfig.stubs, userConfig.stubs || {}),
+        }
+    )
 }
