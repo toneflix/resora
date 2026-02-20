@@ -2,7 +2,37 @@
 
 Resora can be customized using a project-level configuration file.
 
-By default, Resora works without configuration. However, you may define a config file to override directories, stubs, and generation behavior.
+By default, Resora works without configuration. However, you may create a `resora.config.ts` file in your project root to customize behavior.
+
+```ts
+import { defineConfig } from 'resora';
+export default defineConfig({
+  resourcesDir: 'src/resources',
+  stubsDir: 'stubs',
+  stubs: {
+    resource: 'resource.stub',
+    collection: 'collection.stub',
+  },
+});
+```
+
+For simplicity, Resora ships a CLI tool to help with repetitive tasks. To initialize a config file with safe defaults, run the following command in your project root:
+
+::: code-group
+
+```bash [npm]
+npm run resora init
+```
+
+```bash [pnpm]
+pnpm resora init
+```
+
+```bash [yarn]
+yarn resora init
+```
+
+:::
 
 ## Config File Location
 

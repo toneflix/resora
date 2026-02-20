@@ -39,7 +39,7 @@ export class CliApp {
      * @returns 
      */
     init () {
-        const outputPath = join(process.cwd(), 'resora.config.ts')
+        const outputPath = join(process.cwd(), 'resora.config.js')
         const stubPath = join(this.config.stubsDir, this.config.stubs.config)
 
         if (existsSync(outputPath) && !this.command.option('force')) {
@@ -50,7 +50,7 @@ export class CliApp {
         this.ensureDirectory(outputPath)
 
         if (existsSync(outputPath) && this.command.option('force')) {
-            copyFileSync(outputPath, outputPath.replace(/\.ts$/, `.backup.${Date.now()}.ts`))
+            copyFileSync(outputPath, outputPath.replace(/\.js$/, `.backup.${Date.now()}.js`))
         }
 
         writeFileSync(outputPath, readFileSync(stubPath, 'utf-8'))

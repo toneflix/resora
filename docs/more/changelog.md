@@ -15,6 +15,18 @@ The format follows semantic versioning principles.
 - Data wrapping configuration
 - Conditional attribute helpers
 
+## [0.1.3] - [0.1.6] - Patch Releases
+
+### Added
+
+- Refactored CLI structure and added initialization command
+- Enable minification in CLI build configuration
+
+### Fixed
+
+- General code cleanup and refactoring for improved maintainability
+- Updated documentation to reflect CLI changes and new features
+
 ## [0.1.2] - Patch Release
 
 ### Fixed

@@ -18,9 +18,21 @@ Generates a new Resource class.
 
 #### Command
 
-```bash
-resora create:resource User
+::: code-group
+
+```bash [npm]
+npm run resora create:resource User
 ```
+
+```bash [pnpm]
+pnpm resora create:resource User
+```
+
+```bash [yarn]
+yarn resora create:resource User
+```
+
+:::
 
 #### Arguments
 
@@ -32,9 +44,21 @@ resora create:resource User
 
 #### Example
 
-```bash
-resora create:resource Post
+::: code-group
+
+```bash [npm]
+npm run resora create:resource Post
 ```
+
+```bash [pnpm]
+pnpm resora create:resource Post
+```
+
+```bash [yarn]
+yarn resora create:resource Post
+```
+
+:::
 
 Generates:
 
@@ -48,9 +72,21 @@ Generates a new ResourceCollection class.
 
 #### Command
 
-```bash
-resora create:collection User
+::: code-group
+
+```bash [npm]
+npm run resora create:collection User
 ```
+
+```bash [pnpm]
+pnpm resora create:collection User
+```
+
+```bash [yarn]
+yarn resora create:collection User
+```
+
+:::
 
 #### Arguments
 
@@ -62,9 +98,21 @@ resora create:collection User
 
 #### Example
 
-```bash
-resora create:collection Post
+::: code-group
+
+```bash [npm]
+npm run resora create:collection Post
 ```
+
+```bash [pnpm]
+pnpm resora create:collection Post
+```
+
+```bash [yarn]
+yarn resora create:collection Post
+```
+
+:::
 
 Generates:
 
@@ -78,9 +126,21 @@ Generates both a Resource and its corresponding Collection.
 
 #### Command
 
-```bash
-resora create:all User
+::: code-group
+
+```bash [npm]
+npm run resora create:all User
 ```
+
+```bash [pnpm]
+pnpm resora create:all User
+```
+
+```bash [yarn]
+yarn resora create:all User
+```
+
+:::
 
 #### Arguments
 
@@ -92,9 +152,21 @@ resora create:all User
 
 #### Example
 
-```bash
-resora create:all Admin
+::: code-group
+
+```bash [npm]
+npm run resora create:all Admin
 ```
+
+```bash [pnpm]
+pnpm resora create:all Admin
+```
+
+```bash [yarn]
+yarn resora create:all Admin
+```
+
+:::
 
 Generates:
 
@@ -109,9 +181,21 @@ If a file already exists, use `--force` to overwrite it.
 
 Example:
 
-```bash
-resora create:resource User --force
+::: code-group
+
+```bash [npm]
+npm run resora create:resource User --force
 ```
+
+```bash [pnpm]
+pnpm resora create:resource User --force
+```
+
+```bash [yarn]
+yarn resora create:resource User --force
+```
+
+:::
 
 ## Generated Naming Convention
 
