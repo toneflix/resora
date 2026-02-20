@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env node
 
 import { CliApp } from './actions'
 import { Kernel } from '@h3ravel/musket'
