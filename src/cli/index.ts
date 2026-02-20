@@ -8,7 +8,7 @@ import logo from './logo'
 
 const app = new CliApp()
 
-await Kernel.init(app, {
+await Kernel.init(await app.loadConfig(), {
     logo,
     name: 'Resora CLI',
     baseCommands: [

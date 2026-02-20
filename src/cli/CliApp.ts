@@ -12,6 +12,11 @@ export class CliApp {
 
     constructor(config: Partial<Config> = {}) {
         this.config = defineConfig(config)
+    }
+
+
+    async loadConfig (config: Partial<Config> = {}) {
+        this.config = defineConfig(config)
 
         const require = createRequire(import.meta.url)
         const possibleConfigPaths = [
@@ -31,6 +36,8 @@ export class CliApp {
                 }
             }
         }
+
+        return this
     }
 
     /**
