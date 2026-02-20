@@ -22,6 +22,7 @@ export const defineConfig = (userConfig: Partial<Omit<Config, 'stubs'>> & { stub
             resourcesDir: 'src/resources',
             stubsDir,
             stubs: {
+                config: 'resora.config.stub',
                 resource: 'resource.stub',
                 collection: 'resource.collection.stub',
             },
@@ -29,6 +30,7 @@ export const defineConfig = (userConfig: Partial<Omit<Config, 'stubs'>> & { stub
         userConfig,
         {
             stubs: Object.assign({
+                config: 'resora.config.stub',
                 resource: 'resource.stub',
                 collection: 'resource.collection.stub',
             }, userConfig.stubs || {}),

@@ -1,6 +1,6 @@
 export * from './ApiResource'
 export * from './BaseResource'
-export * from './cli/actions'
+export * from './cli/CliApp'
 export * from './cli/commands/MakeResource'
 export * from './cli/logo'
 export * from './GenericResource'

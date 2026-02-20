@@ -1,5 +1,5 @@
+import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs'
 import { dirname, join } from 'path'
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs'
 
 import { Command } from '@h3ravel/musket'
 import { Config } from 'src/types'
@@ -31,6 +31,31 @@ export class CliApp {
                 }
             }
         }
+    }
+
+    /**
+     * Initialize Resora by creating a default config file in the current directory
+     * 
+     * @returns 
+     */
+    init () {
+        const outputPath = join(process.cwd(), 'resora.config.ts')
+        const stubPath = join(this.config.stubsDir, this.config.stubs.config)
+
+        if (existsSync(outputPath) && !this.command.option('force')) {
+            this.command.error(`Error: ${outputPath} already exists.`)
+            process.exit(1)
+        }
+
+        this.ensureDirectory(outputPath)
+
+        if (existsSync(outputPath) && this.command.option('force')) {
+            copyFileSync(outputPath, outputPath.replace(/\.ts$/, `.backup.${Date.now()}.ts`))
+        }
+
+        writeFileSync(outputPath, readFileSync(stubPath, 'utf-8'))
+
+        return { path: outputPath }
     }
 
     /**

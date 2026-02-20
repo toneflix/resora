@@ -178,6 +178,10 @@ export interface Config {
      */
     stubs: {
         /**
+         * @description The stub file name for the configuration file. This stub will be used when generating the default configuration file.
+         */
+        config: string
+        /**
          * @description The stub file name for a resource. This stub will be used when generating a resource file.
          */
         resource: string

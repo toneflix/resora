@@ -1,0 +1,5 @@
+import { defineConfig } from 'resora'
+
+export default defineConfig({
+  resourcesDir: 'src/resources',
+})

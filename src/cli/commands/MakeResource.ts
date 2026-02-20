@@ -1,4 +1,4 @@
-import { CliApp } from '../actions'
+import { CliApp } from '../CliApp'
 import { Command } from '@h3ravel/musket'
 
 export class MakeResource extends Command<CliApp> {

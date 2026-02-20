@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { CliApp } from './actions'
+import { CliApp } from './CliApp'
+import { InitCommand } from './commands/InitCommand'
 import { Kernel } from '@h3ravel/musket'
 import { MakeResource } from './commands/MakeResource'
 import logo from './logo'
@@ -11,7 +12,8 @@ await Kernel.init(app, {
     logo,
     name: 'Resora CLI',
     baseCommands: [
-        MakeResource
+        MakeResource,
+        InitCommand,
     ],
     exceptionHandler (exception) {
         throw exception
